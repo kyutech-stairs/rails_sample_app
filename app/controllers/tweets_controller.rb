@@ -6,4 +6,8 @@ class TweetsController < ApplicationController
   def show 
     @tweet = Tweet.find_by(id: params[:id])
   end
+
+  def new
+    @tweet = Tweet.new
+  end
 end

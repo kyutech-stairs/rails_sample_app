@@ -158,7 +158,7 @@ end
 
 3. `git add & commit`
 
-4. Define `show` method
+4. Define `show` method:
 ```ruby
 class TweetsController < ApplicationController
   def index
@@ -167,5 +167,27 @@ class TweetsController < ApplicationController
 
   def show
     @tweet = Tweet.find_by(id: params[:id])
+  end
 end
 ```
+
+5. `git add & commit`
+
+6. Define `new` method:
+```ruby
+class TweetsController < ApplicationController
+  def index
+    @tweets = Tweet.all
+  end
+
+  def show
+    @tweet = Tweet.find_by(id: params[:id])
+  end
+
+  def new 
+    @tweet = Tweet.new
+  end
+end
+```
+
+7. `git add & commit`
