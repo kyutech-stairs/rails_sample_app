@@ -11,9 +11,11 @@ cd rails_sample_app
 bundle init
 ```
 2. Remove `#` for `gem "rails"` on Gemfile:
-```Gemfile
+```
 # gem 'rails'
+```
 ↓
+```
 gem 'rails'
 ```
 
@@ -99,9 +101,9 @@ bundle exec rails server
 1. Design Tweet model's table
 
 | columnns | type | memo|
-| :-: | :-: | :-: |
+| -: | :- | :- |
 | id | integer | auto created by rails |
-| **body** | **string** | |
+| **body** | **string** | **max-length: 120, null: false** |
 | created_at | timestamp | auto created by rails |
 | updated_at | timestamp | auto created by rails |
 
@@ -116,3 +118,26 @@ bundle exec rails db:migrate
 ```
 
 4. `git add & commit`
+
+## Generate and Setup `tweets_controller`
+
+1. Design `tweets_controller`
+
+| Action | Behavior |
+| -: | :- |
+| index | get all tweets |
+| show | get a tweet |
+| new | create a new tweet |
+| create | post a new tweet to model |
+| edit | get a tweet for edit |
+| update | post a edited tweet to model |
+| destroy | destroy a tweet |
+
+2. Generate `tweets_controller`
+```
+bundle exec rails g controller tweets
+```
+
+3. `git add & commit`
+
+4. Edit `app/controllers/tweets_controller`
