@@ -140,7 +140,7 @@ bundle exec rails g controller tweets
 
 3. `git add & commit`
 
-## Edit `tweets_controller`
+## Edit `tweets_controller` Part1
 1. Open `app/controllers/tweets_controller.rb`:
 ```ruby
 class TweetsController < ApplicationController
@@ -150,15 +150,34 @@ end
 2. Define `index` method:
 ```ruby
 class TweetsController < ApplicationController
+  # --- start ---
   def index
     @tweets = Tweet.all
   end
+  # --- end ---
 end
 ```
 
-3. `git add & commit`
+- `git add & commit`
 
-4. Define `show` method:
+3. Define `show` method:
+```ruby
+class TweetsController < ApplicationController
+  def index
+    @tweets = Tweet.all
+  end
+
+  # --- start ---
+  def show
+    @tweet = Tweet.find_by(id: params[:id])
+  end
+  # --- end ---
+end
+```
+
+- `git add & commit`
+
+4. Define `new` method:
 ```ruby
 class TweetsController < ApplicationController
   def index
@@ -168,12 +187,18 @@ class TweetsController < ApplicationController
   def show
     @tweet = Tweet.find_by(id: params[:id])
   end
+
+  # --- start ---
+  def new 
+    @tweet = Tweet.new
+  end
+  # --- end ---
 end
 ```
 
-5. `git add & commit`
+-  `git add & commit`
 
-6. Define `new` method:
+5. Define Strong Parameters on private:
 ```ruby
 class TweetsController < ApplicationController
   def index
@@ -187,7 +212,120 @@ class TweetsController < ApplicationController
   def new 
     @tweet = Tweet.new
   end
+
+  # --- start ---
+  private
+    def tweet_params
+      params.require(:tweet).permit(:body)
+    end
+  # --- end ---
 end
 ```
 
-7. `git add & commit`
+6. Define `create` method:
+```ruby
+class TweetsController < ApplicationController
+  def index
+    @tweets = Tweet.all
+  end
+
+  def show
+    @tweet = Tweet.find_by(id: params[:id])
+  end
+
+  def new 
+    @tweet = Tweet.new
+  end
+
+  # --- start ---
+  def create
+    @tweet = Tweet.new(tweet_params)
+    if @tweet.save
+      redirect_to tweets_path
+    else
+      render :new
+    end
+  end
+  # --- end ---
+
+  private
+    def tweet_params
+      params.require(:tweet).permit(:body)
+    end
+end
+```
+
+- `git add & commit`
+
+## Set routing
+1. Open `app/config/routes.rb`:
+```ruby
+Rails.application.routes.draw do
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+end
+```
+
+2. Set routing for tweets_controller:
+```ruby
+# How to write routing
+root 'controller#action'
+get '/path', to: 'controller#action'
+post '/path', to: 'controller#action'
+resources :controller
+# etc ...
+```
+
+- resources:
+```ruby
+resources :tweets
+```
+**↑ Same routing ↓**
+```ruby
+get '/tweets', to: 'tweets#index'
+get '/tweets/:id', to: 'tweets#show'
+get '/tweets/new', to: 'tweets#new'
+post '/tweets', to: 'tweets#create'
+get '/tweets/:id/edit', to: 'tweets#edit'
+patch '/tweets/:id', to: 'tweets#update'
+delete '/tweets/:id', to: 'tweets#destroy'
+```
+- this time:
+```ruby
+Rails.application.routes.draw do
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  get '/tweets', to: 'tweets#index'
+  get '/tweets/:id', to: 'tweets#show'
+  get '/tweets/new', to: 'tweets#new'
+  post '/tweets', to: 'tweets#create'
+
+end
+```
+
+3. Check routing: 
+```bash
+bundle exec rails routes
+``` 
+- `git add & commit`
+
+## Create View files
+1. create new files in `app/views/tweets`
+```
+app/
+    assets/
+    channels/
+    controllers/
+    helpers/
+    jobs/
+    mailers/
+    models/
+  * views/
+        layouts/
+      * tweets/
+            index.html.erb
+            show.html.erb
+            new.html.erb
+```
+*erb extension: Embed Ruby for HTML*
+
+2. Edit `index.html.erb`
+
