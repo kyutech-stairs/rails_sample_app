@@ -294,8 +294,9 @@ delete '/tweets/:id', to: 'tweets#destroy'
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   get '/tweets', to: 'tweets#index'
-  get '/tweets/:id', to: 'tweets#show'
   get '/tweets/new', to: 'tweets#new'
+  get '/tweets/:id', to: 'tweets#show'
+  
   post '/tweets', to: 'tweets#create'
 
 end
@@ -329,6 +330,45 @@ app/
 - `git add & commit`
 
 2. Edit `index.html.erb`:
-```HTML
-<h1></h1>
+```erb
+<h1>Tweets#index</h1>
+
+<%= link_to  "New Tweet", new_tweet_path %>
+
+<% @tweets.each do |tweet| %>
+  <p><%= tweet.body %></p>
+  <%= link_to 'Show', tweet %>
+<% end %>
 ```
+- `git add & commit`
+
+3. Edit `show.html.erb`
+```erb
+<h1>Tweets#show</h1>
+
+<h3><%= @tweet.body %></h3>
+<p><%= @tweet.updated_at %><p>
+<%= link_to  "Back", :back %>
+```
+- `git add & commit`
+
+4. Edit `new.html.erb`
+```erb
+<h1>Tweets#new</h1>
+
+<%= form_with(model: @tweet, local: true) do |form| %>
+  <div>
+    <%= form.label :body %>
+    <%= form.text_area :body %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
+
+<%= link_to  "Back", :back %>
+```
+- `git add & commit`
+
+## Check your app on localhost !
