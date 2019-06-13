@@ -326,6 +326,9 @@ app/
             new.html.erb
 ```
 *erb extension: Embed Ruby for HTML*
+- `git add & commit`
 
-2. Edit `index.html.erb`
-
+2. Edit `index.html.erb`:
+```HTML
+<h1></h1>
+```
