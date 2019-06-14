@@ -503,7 +503,7 @@ class TweetsController < ApplicationController
 
     # ------ start ------
     def set_tweet
-      @tweet = find.by(id: params[:id])
+      @tweet = Tweet.find_by(id: params[:id])
     end
     # ------  end  ------
 end
@@ -562,7 +562,7 @@ class TweetsController < ApplicationController
     end
 
     def set_tweet
-      @tweet = find.by(id: params[:id])
+      @tweet = Tweet.find_by(id: params[:id])
     end
 end
 ```
@@ -619,6 +619,8 @@ Partial is a shareble program for some view files.
 <%= render "form", tweet: @tweet %>
 <!-- ADD -->
 
+<%= link_to  "Back", tweets_path %>
+
 <!-- REMOVE -->
  <%= form_with(model: @tweet, local: true) do |form| %>
   <div>
@@ -637,8 +639,24 @@ Partial is a shareble program for some view files.
 ```erb
 <h1>Edit a tweet</h1>
 <%= render "form", tweet: @tweet %>
+<%= link_to  "Back", tweets_path %>
 ```
 
 - `git add & commit`
 
+5. Add Edit and Delete button to `show.html.erb`:
+```erb
+<h1>Show a tweet</h1>
 
+<h3><%= @tweet.body %></h3>
+<p><%= @tweet.updated_at %><p>
+<%= link_to  "Back", tweets_path %>
+
+<!-- ADD -->
+<%= link_to  "Edit", edit_tweet_path(@tweet) %>
+<%= link_to 'Destroy', @tweet, method: :delete, data: { confirm: 'Are you sure?' } %>
+<!-- ADD -->
+
+```
+
+## **Check your app on localhost**
