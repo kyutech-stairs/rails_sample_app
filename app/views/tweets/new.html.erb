@@ -1,6 +1,8 @@
 <h1>Tweets#new</h1>
 
-<%= form_with(model: @tweet, local: true) do |form| %>
+<%
+=begin%>
+ <%= form_with(model: @tweet, local: true) do |form| %>
   <div>
     <h3><%= form.label :body %></h3>
     <%= form.text_area :body %>
@@ -9,4 +11,8 @@
   <div>
     <%= form.submit %>
   </div>
-<% end %>
+<% end %> 
+<%
+=end%>
+
+<%= render "form", tweet: @tweet %>

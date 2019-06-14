@@ -1,4 +1,4 @@
-# Rails Workshop 2019
+# Rails Workshop 2019 Day 1
 ## Make a new directory for Rails app.
 ```bash
 mkdir rails_sample_app
@@ -140,7 +140,7 @@ bundle exec rails g controller tweets
 
 3. `git add & commit`
 
-## Edit `tweets_controller` Part1
+## Edit `tweets_controller` Part 1
 1. Open `app/controllers/tweets_controller.rb`:
 ```ruby
 class TweetsController < ApplicationController
@@ -308,7 +308,7 @@ bundle exec rails routes
 ``` 
 - `git add & commit`
 
-## Create View files
+## Create and Edit View files Part 1
 1. create new files in `app/views/tweets`
 ```
 app/
@@ -372,3 +372,273 @@ app/
 - `git add & commit`
 
 ## Check your app on localhost !
+
+
+
+
+# Rails Workshop 2019 Day 2
+## Edit `tweets_controller` Part 2
+0. Remind: Design of `tweets_controller`
+
+| Action | Behavior |
+| -: | :- |
+| index | get all tweets |
+| show | get a tweet |
+| new | create a new tweet |
+| create | post a new tweet to model |
+| **edit** | **get a tweet for edit** |
+| **update** | **post a edited tweet to model** |
+| **destroy** | **destroy a tweet** |
+
+
+1. Define `edit`, `update` and `destroy` method:
+```ruby
+class TweetsController < ApplicationController
+  def index 
+    @tweets = Tweet.all
+  end
+
+  def show 
+    @tweet = Tweet.find_by(id: params[:id])
+  end
+
+  def new
+    @tweet = Tweet.new
+  end
+
+  def create
+    @tweet = Tweet.new(tweet_params)
+    if @tweet.save
+      redirect_to tweets_path
+    else
+      render :new
+    end
+  end
+
+  # ------ start ------
+  def edit
+    @tweet = Tweet.find_by(id: params[:id])
+  end
+
+  def update
+    @tweet = Tweet.find_by(id: params[:id])
+    if @tweet.update(tweet_params)
+      redirect_to tweets_path
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    @tweet = Tweet.find_by(id: params[:id])
+    @tweet.destroy
+    redirect_to tweets_path
+  end
+  # ------  end  ------
+
+  private
+    def tweet_params
+      params.require(:tweet).permit(:body)
+    end
+
+end
+```
+
+- `git add & commit`
+
+## **D**on't **R**epeat **Y**ourself
+**DRY** is one of Ruby on Rails' philosophies.
+
+It means you must reduce same programs as much as possible.
+
+Now, We rewrite `tweets_controller` to follow DRY.
+
+2. Define `set_tweet` method under `private`:
+```ruby
+class TweetsController < ApplicationController
+  def index 
+    @tweets = Tweet.all
+  end
+
+  def show 
+    @tweet = Tweet.find_by(id: params[:id])
+  end
+
+  def new
+    @tweet = Tweet.new
+  end
+
+  def create
+    @tweet = Tweet.new(tweet_params)
+    if @tweet.save
+      redirect_to tweets_path
+    else
+      render :new
+    end
+  end
+
+  def edit
+    @tweet = Tweet.find_by(id: params[:id])
+  end
+
+  def update
+    @tweet = Tweet.find_by(id: params[:id])
+    if @tweet.update(tweet_params)
+      redirect_to tweets_path
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    @tweet = Tweet.find_by(id: params[:id])
+    @tweet.destroy
+    redirect_to tweets_path
+  end
+
+  private
+    def tweet_params
+      params.require(:tweet).permit(:body)
+    end
+
+    # ------ start ------
+    def set_tweet
+      @tweet = find.by(id: params[:id])
+    end
+    # ------  end  ------
+end
+```
+
+3. Set `before_action` to head of `tweets_controller` and remove same variables in some methods:
+```ruby
+class TweetsController < ApplicationController
+  # ------ start ------
+  before_action :set_tweet, only: [:show, :edit, :update, :destroy]
+  # ------  end  ------
+
+  def index 
+    @tweets = Tweet.all
+  end
+
+  def show 
+    # @tweet = Tweet.find_by(id: params[:id]) REMOVE
+  end
+
+  def new
+    @tweet = Tweet.new
+  end
+
+  def create
+    # @tweet = Tweet.find_by(id: params[:id]) REMOVE
+    if @tweet.save
+      redirect_to tweets_path
+    else
+      render :new
+    end
+  end
+
+  def edit
+    # @tweet = Tweet.find_by(id: params[:id]) REMOVE
+  end
+
+  def update
+    # @tweet = Tweet.find_by(id: params[:id]) REMOVE
+    if @tweet.update(tweet_params)
+      redirect_to tweets_path
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    # @tweet = Tweet.find_by(id: params[:id]) REMOVE
+    @tweet.destroy
+    redirect_to tweets_path
+  end
+
+  private
+    def tweet_params
+      params.require(:tweet).permit(:body)
+    end
+
+    def set_tweet
+      @tweet = find.by(id: params[:id])
+    end
+end
+```
+
+
+## Crete and Edit View files Part 2
+1. Create `edit.html.erb` and `_form.html.erb`:
+```
+app/
+    assets/
+    channels/
+    controllers/
+    helpers/
+    jobs/
+    mailers/
+    models/
+  * views/
+        layouts/
+      * tweets/
+            index.html.erb
+            show.html.erb
+            new.html.erb
+          * edit.html.erb
+          * _form.html.erb
+```
+
+`_form.html.erb` will use `new.html.erb` and `edit.html.erb` as partial.
+
+- `git add & commit`
+
+Partial is a shareble program for some view files.
+
+2. Edit `_form.html.erb`:
+```erb
+<!-- rename @tweet to tweet -->
+<%= form_with(model: tweet, local: true) do |form| %>
+  <div>
+    <h3><%= form.label :body %></h3>
+    <%= form.text_area :body %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>
+```
+- `git add & commit`
+
+3. Add render partial to `new.html.erb` and remove previous program :
+```erb
+<h1>Create a new tweet</h1>
+
+<!-- ADD -->
+<%= render "form", tweet: @tweet %>
+<!-- ADD -->
+
+<!-- REMOVE -->
+ <%= form_with(model: @tweet, local: true) do |form| %>
+  <div>
+    <h3><%= form.label :body %></h3>
+    <%= form.text_area :body %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %> 
+<!-- REMOVE -->
+```
+
+4. Also, add render partial to `edit.html.erb`:
+```erb
+<h1>Edit a tweet</h1>
+<%= render "form", tweet: @tweet %>
+```
+
+- `git add & commit`
+
+

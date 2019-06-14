@@ -20,6 +20,22 @@ class TweetsController < ApplicationController
     end
   end
 
+  def edit
+    @tweet = Tweet.find_by(id: params[:id])
+  end
+
+  def update
+    @tweet = Tweet.find_by(id: params[:id])
+  end
+
+  def destroy
+    @tweet = Tweet.find_by(id: params[:id])
+    @tweet.destroy
+    redirect_to tweets_path
+  end
+
+  
+
   private
     def tweet_params
       params.require(:tweet).permit(:body)
