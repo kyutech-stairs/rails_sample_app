@@ -523,7 +523,7 @@ class TweetsController < ApplicationController
   end
 
   def create
-    # @tweet = Tweet.find_by(id: params[:id]) REMOVE
+    @tweet = Tweet.new(tweet_params)
     if @tweet.save
       redirect_to tweets_path
     else
